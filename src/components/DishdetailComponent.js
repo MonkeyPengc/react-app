@@ -20,6 +20,11 @@ class CommentForm extends Component {
         this.setState({ isCommentModalOpen: !this.state.isCommentModalOpen });
     }
 
+    handleSubmit(values) {
+        this.toggleCommentModal();
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -29,7 +34,7 @@ class CommentForm extends Component {
                 <Modal isOpen={this.state.isCommentModalOpen} toggle={this.toggleCommentModal} >
                     <ModalHeader toggle={this.toggleCommentModal}>Submit Comment</ModalHeader>
                     <ModalBody>
-                        <LocalForm>
+                        <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
                             <Label htmlFor="rating">Rating</Label>
                             <Row className="form-group">
                                 <Col md={10}>
@@ -42,11 +47,11 @@ class CommentForm extends Component {
                                     </Control.select>
                                 </Col>
                             </Row>
-                            <Label htmlFor="name">Your Name</Label>
+                            <Label htmlFor="author">Your Name</Label>
                             <Row className="form-group">
                                 <Col md={10}>
-                                    <Control.text model=".name" name="name" className="form-control" validators={{ minLength: minLength(3), maxLength: maxLength(15) }}/>
-                                    <Errors className="text-danger" model=".name" show="touched" messages={{ minLength: 'Must be greater than 2 characters', maxLength: 'Must be 15 characters or less'}} />
+                                    <Control.text model=".author" name="author" className="form-control" validators={{ minLength: minLength(3), maxLength: maxLength(15) }}/>
+                                    <Errors className="text-danger" model=".author" show="touched" messages={{ minLength: 'Must be greater than 2 characters', maxLength: 'Must be 15 characters or less'}} />
                                 </Col>
                             </Row>
                             <Label htmlFor="comment">Comment</Label>
@@ -84,7 +89,7 @@ function RenderDish({ dish }) {
     )
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, dishId }) {
     const cookedComments = comments.map((comment) => {
         return (
             <li key={comment.id}>
@@ -100,7 +105,7 @@ function RenderComments({ comments }) {
                 {cookedComments}
             </ul>
             <div className="text-left">
-                <CommentForm />
+                <CommentForm dishId={dishId} addComment={addComment} />
             </div>   
         </div>
     )
@@ -122,7 +127,7 @@ const DishDetail = (props) => {
                 </div>
                 <div className="row">
                     <RenderDish dish={props.dish} />
-                    <RenderComments comments={props.comments} />
+                    <RenderComments comments={props.comments} addComment={props.addComment} dishId={props.dish.id} />
                 </div>
             </div>
         );
