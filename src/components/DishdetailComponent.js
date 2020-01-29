@@ -24,7 +24,7 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleCommentModal();
-        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+        this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render() {
@@ -52,8 +52,8 @@ class CommentForm extends Component {
                             <Label htmlFor="author">Your Name</Label>
                             <Row className="form-group">
                                 <Col md={10}>
-                                    <Control.text model=".author" name="author" className="form-control" validators={{ minLength: minLength(3), maxLength: maxLength(15) }}/>
-                                    <Errors className="text-danger" model=".author" show="touched" messages={{ minLength: 'Must be greater than 2 characters', maxLength: 'Must be 15 characters or less'}} />
+                                    <Control.text model=".author" name="author" className="form-control" validators={{ minLength: minLength(3), maxLength: maxLength(15) }} />
+                                    <Errors className="text-danger" model=".author" show="touched" messages={{ minLength: 'Must be greater than 2 characters', maxLength: 'Must be 15 characters or less' }} />
                                 </Col>
                             </Row>
                             <Label htmlFor="comment">Comment</Label>
@@ -91,7 +91,7 @@ function RenderDish({ dish }) {
     )
 }
 
-function RenderComments({ comments, addComment, dishId }) {
+function RenderComments({ comments, postComment, dishId }) {
     const cookedComments = comments.map((comment) => {
         return (
             <li key={comment.id}>
@@ -107,14 +107,14 @@ function RenderComments({ comments, addComment, dishId }) {
                 {cookedComments}
             </ul>
             <div className="text-left">
-                <CommentForm dishId={dishId} addComment={addComment} />
-            </div>   
+                <CommentForm dishId={dishId} postComment={postComment} />
+            </div>
         </div>
     )
 }
 
 const DishDetail = (props) => {
-    if(props.isLoading) {
+    if (props.isLoading) {
         return (
             <div className="container">
                 <div className="row">
@@ -123,7 +123,7 @@ const DishDetail = (props) => {
             </div>
         );
     }
-    else if(props.errMess) {
+    else if (props.errMess) {
         return (
             <div className="container">
                 <div className="row">
@@ -132,7 +132,7 @@ const DishDetail = (props) => {
             </div>
         );
     }
-    else if(props.dish != null) {
+    else if (props.dish != null) {
         return (
             <div className="container">
                 <div className="row">
@@ -147,7 +147,7 @@ const DishDetail = (props) => {
                 </div>
                 <div className="row">
                     <RenderDish dish={props.dish} />
-                    <RenderComments comments={props.comments} addComment={props.addComment} dishId={props.dish.id} />
+                    <RenderComments comments={props.comments} postComment={props.postComment} dishId={props.dish.id} />
                 </div>
             </div>
         );
